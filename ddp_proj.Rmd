@@ -1,0 +1,82 @@
+---
+title: "DDP_Project"
+author: "James Xie"
+date: "October 16, 2014"
+output: html_document
+runtime: shiny
+---
+Developing Data Product
+
+**Poject Requirements**
+
+1. Write a shiny application with associated supporting documentation. The documentation should be thought of as whatever a user will need to get started using your application.
+2. Deploy the application on Rstudio's shiny server
+3. Share the application link by pasting it into the text box below
+4. Share your server.R and ui.R code on github
+
+The application must include the following:
+
+1. Some form of input (widget: textbox, radio button, checkbox, ...)
+2. Some operation on the ui input in sever.R
+3. Some reactive output displayed as a result of server calculations
+4. You must also include enough documentation so that a novice user could use your application.
+5. The documentation should be at the Shiny website itself. Do not post to an external link.  
+
+-------------
+
+This Shiny application is for interactive plotting on Motor Trends data set MTCARS coming with RStudio datasets. The Shiny application was first developed and tested with two components Server.R and ui.R. It was then embedded inline with this markdwon document as there are so difference between the standalone Shiny app and inline one. 
+
+The application is just a demonstration on how to use Shiny to present your data analysis results. It allows users to interactively explore the relationship between different variables from MTCARS dataset. You can select different predictor and respose variables to show how they are related. The plot should be refreshed based on your input.  It is also good to check the data distribution to see if it may meet your assumption for your hypotheses testing. To add a bit more fun, you can select different color and degree of transparency of the dots. Give it a try and you will love how Shiny, RStudio, and Markdown work together. 
+ 
+##Variable Definition:
+ -  mpg	Miles/(US) gallon
+ -  cyl	Number of cylinders
+ -  disp	Displacement (cu.in.)
+ -  hp	  Gross horsepower
+ -  drat	Rear axle ratio
+ -  wt 	Weight (lb/1000)
+ -  qsec	1/4 mile time
+ -  vs	  V/S: V or Straight engine
+ -  am	 Transmission (0 = automatic, 1 = manual)
+ -  gear	Number of forward gears
+ -  carb	Number of carburetors
+ 
+------------------
+
+##Usage:
+
+ -  To select a predictor varaiable, click any value under X variable dropdown menu
+ -  To select a outcome varaiable, click any value under Y variable dropdown menu 
+ -  To select a different color, click any value under Color dropdown menu 
+ -  To try different degree of color transparency, slide the Color Transparency
+ -  By default, the application shows the relationship between Miles/(US) gallon ('mpg') and Rear axle ratio ('drat') in 'red' with 0.5 transparency. 
+ 
+--------------------------
+
+```{r, echo=FALSE}
+library(shiny)
+library(ggplot2)
+
+titlePanel("Interactive Plot for MTCARS Data")
+inputPanel(
+          selectInput('xVar', label='X Variable:', choices = names(mtcars), selected=names(mtcars)[[1]], width=160),
+          selectInput('yVar', label='Y Variable:', choices = names(mtcars), selected=names(mtcars)[[5]], width=160),
+          selectInput("dotColor", label = "Color:", choices = c("red","green","blue","yellow"), selected = "red", width=160),
+          sliderInput("colorTrans", label = "Color Transparancy:", min = 0.1,  max = 1.0, value = 0.5, step = 0.1, width=160)
+    )
+renderPlot ({ 
+      plot(mtcars[,c(input$yVar, input$xVar)],
+           main = paste0(input$yVar,' vs ', input$xVar),
+           xlab = input$xVar,
+           ylab = input$yVar,
+           col = adjustcolor(input$dotColor, alpha.f = input$colorTrans),
+           pch = 20, cex = 5)
+      } 
+)  
+```
+
+
+
+
+
+
